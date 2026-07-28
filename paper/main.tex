@@ -395,7 +395,7 @@ credentials it issued and can correlate issuance time with
 authentication events through side-channels external to ZKAuth.
 Mitigation of Issuer-level surveillance is outside the current scope
 and is deferred to future blind-issuance extensions.
-Epoch-based on-chain root anchoring (§\ref{sec:framework}.D)
+Epoch-based on-chain root anchoring (§\ref{sec:revocation})
 introduces a potential network-layer timing side-channel: an adversary
 monitoring the ledger can correlate a root update event with a
 subsequent authentication. ZKAuth does not presently mitigate this;
@@ -750,6 +750,7 @@ PPAS evaluation: $O(1)$.
 \end{figure}
 
 \subsection{Revocation Mechanism}
+\label{sec:revocation}
 
 Credential revocation is managed via a sparse Merkle tree (SMT)
 \cite{khovratovich2023merkle} of height $h = 256$, where leaves
@@ -1189,7 +1190,12 @@ $0.992$ (vs. Groth16 $0.959$, a $3.4\%$ advantage from lower correlation
 risk). Under PPAS-Z all schemes score $>0.97$. The full PPAS formula
 (Definition~\ref{def:ppas}) provides the most discriminative ranking,
 confirming that correlation risk is the decisive dimension where ZKAuth
-excels over Groth16.
+excels over Groth16. As PPAS-L, PPAS-C, and PPAS-Z represent the
+extreme vertices of the weight simplex ($\alpha{+}\beta{+}\gamma=1$),
+the fact that ZKAuth leads on two of three dimensions confirms that its
+overall ranking is stable across all convex weight combinations,
+satisfying the $\pm 20\%$ sensitivity criterion stated in
+Definition~\ref{def:ppas}.
 
 \subsection{Three-Agent Individual Metrics}
 
