@@ -1,0 +1,20 @@
+[
+  {
+    "vs": "ZK-SNARK (Groth16)",
+    "t_stat": 369.1542919065688,
+    "p_val": 3.998362825112969e-20,
+    "significant": true
+  },
+  {
+    "vs": "ZK-STARK",
+    "t_stat": 1188.4840756589003,
+    "p_val": 1.0762649758265794e-24,
+    "significant": true
+  },
+  {
+    "vs": "Bulletproofs",
+    "t_stat": 2687.99017825301,
+    "p_val": 6.950555583846694e-28,
+    "significant": true
+  }
+]
