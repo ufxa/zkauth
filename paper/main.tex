@@ -734,7 +734,7 @@ The ZKAuth circuit $\mathcal{C}$ is an R1CS encoding of the predicate:
 if and only if: (i) $h_{\mathsf{VC}} = \mathsf{Poseidon}(\mathsf{attrs})$;
 (ii) $\rho_{\mathsf{nonmember}}$ is a valid non-membership proof in the
 accumulator with root$_{\mathsf{acc}}$; (iii) $\eta =
-H(\mathsf{sk}_H \| r)$ and the public key derived from $\mathsf{sk}_H$
+H(\mathsf{sk}_H \| \mathsf{nonce} \| r)$ and the public key derived from $\mathsf{sk}_H$
 matches the DID Document; and (iv) $\mathsf{attrs}$ satisfy predicate
 $\phi$. The algorithm is described in Fig.~\ref{fig:algorithm}.
 
@@ -1295,7 +1295,11 @@ To assess the contribution of each PPAS component, we evaluated three
 ablated versions: PPAS-L (latency only, $\alpha=1$), PPAS-C (correlation
 only, $\beta=1$), and PPAS-Z (ZK-completeness only, $\gamma=1$). ZKAuth
 under PPAS-L scores $0.990$ (vs. Groth16 $0.993$, disadvantage due to
-$1.21$ vs. $0.82$~ms verification latency). Under PPAS-C, ZKAuth scores
+$1.21$ vs. $0.82$~ms verification latency; this $+0.39$~ms overhead is
+the direct cost of the 256 Poseidon constraints added for Merkle
+revocation---an explicit design trade-off accepted in exchange for the
+$\Delta\mathsf{CorRisk} = 0.033$ advantage captured by the $\beta$ term).
+Under PPAS-C, ZKAuth scores
 $0.992$ (vs. Groth16 $0.959$, a $3.4\%$ advantage from lower correlation
 risk). Under PPAS-Z all schemes score $>0.97$. The full PPAS formula
 (Definition~\ref{def:ppas}) provides the most discriminative ranking,
