@@ -529,60 +529,122 @@ authenticated messaging layer, as shown in Fig.~\ref{fig:overview}.
 
 % ---- Figure 1: Architecture ----------------------------------------
 \begin{figure*}[t]
-\caption{ZKAuth Framework Architecture. The Prover Agent generates
-Groth16 zk-SNARK proofs over Poseidon-hashed credential attributes.
-The Verifier Agent performs constant-time pairing-based proof
-verification. The Registry Agent maintains DID Documents and a sparse
-Merkle tree accumulator for credential revocation. All inter-agent
-communication is authenticated with the holder's DID-bound key pair.
-Arrows indicate data flow; dashed arrows denote on-chain operations.}
+\caption{ZKAuth Framework Architecture. Circled numbers give the
+protocol order: step~1 is one-time credential issuance;
+steps~2--7 constitute one authentication session. The Prover Agent
+generates Groth16 zk-SNARK proofs over Poseidon-hashed credential
+attributes; the Verifier Agent performs constant-time pairing-based
+verification; the Registry Agent maintains a sparse Merkle tree
+accumulator for revocation, anchoring its root on-chain each epoch.
+Solid arrows denote protocol messages; dashed arrows denote on-chain
+operations. The dotted boundary separates the holder-controlled
+domain (wallet) from the relying-party domain.}
 \label{fig:overview}
 \begin{center}
 \begin{tikzpicture}[
   >=Stealth,
-  node distance=1.5cm and 2.5cm,
-  box/.style={draw, rounded corners=4pt, minimum width=3.0cm,
-              minimum height=1.1cm, align=center, font=\small\sffamily},
-  agent/.style={box, fill=zkblue!15, draw=zkblue, thick},
-  ledger/.style={box, fill=zkgray!20, draw=zkgray!60, thick},
-  issuer/.style={box, fill=zkgreen!15, draw=zkgreen, thick},
-  holder/.style={box, fill=zkorange!15, draw=zkorange, thick},
-  verifier/.style={box, fill=zkpurple!15, draw=zkpurple, thick},
-  label/.style={font=\tiny\sffamily, text=zkgray},
-  phase/.style={draw=zkgray!40, dashed, rounded corners=6pt,
-                inner sep=8pt, fill=zkgray!5}
+  font=\sffamily,
+  box/.style={draw=black, line width=0.6pt, rounded corners=2pt,
+              minimum width=2.9cm, minimum height=1.15cm,
+              align=center, fill=white},
+  principal/.style={box},
+  agentbox/.style={box, line width=1.0pt, fill=black!7},
+  ledgerbox/.style={box, double, double distance=1.2pt, fill=black!14},
+  msg/.style={->, line width=0.7pt, draw=black},
+  chain/.style={->, line width=0.7pt, draw=black!55, dashed},
+  lbl/.style={font=\scriptsize\sffamily, fill=white, inner sep=1.5pt},
+  stp/.style={circle, draw=black, fill=white, line width=0.6pt,
+               inner sep=0pt, minimum size=3.4mm,
+               font=\tiny\bfseries\sffamily},
+  zone/.style={draw=black!35, dotted, line width=0.8pt,
+                 rounded corners=8pt, inner sep=12pt}
 ]
-% ---- Principals ----
-\node[issuer]  (issuer)  at (-4.5, 1.5) {Issuer\\$\mathcal{I}$};
-\node[holder]  (holder)  at (0, 1.5)    {Holder\\$\mathcal{H}$};
 
-% ---- Agents ----
-\node[agent] (prover)   at (-2.0, -0.5) {Prover\\Agent\\(PA)};
-\node[agent] (verifier) at ( 3.5, -0.5) {Verifier\\Agent\\(VA)};
-\node[agent] (registry) at ( 0.7, -2.5) {Registry\\Agent\\(RA)};
+% ==================== Nodes (clean grid) ====================
+\node[principal] (issuer) at (-5.8, 3.0)
+  {\textbf{\small Issuer}\\
+   {\scriptsize\color{black!60}$\mathcal{I}$ \, credential authority}};
+\node[principal] (holder) at ( 0.0, 3.0)
+  {\textbf{\small Holder}\\
+   {\scriptsize\color{black!60}$\mathcal{H}$ \, DID controller}};
+\node[principal] (rp)     at ( 5.8, 3.0)
+  {\textbf{\small Relying Party}\\
+   {\scriptsize\color{black!60}$\mathcal{V}$ \, service provider}};
 
-% ---- Ledger / Relying Party ----
-\node[ledger]   (ledger)  at ( 0.7, -4.5) {Distributed\\Ledger\\$\mathcal{R}$};
-\node[verifier] (rp)      at ( 6.0,  1.5) {Relying\\Party\\$\mathcal{V}$};
+\node[agentbox] (prover)   at (-2.9, 0.2)
+  {\textbf{\small Prover Agent}\\
+   {\scriptsize\color{black!60}PA \, Groth16 proof generation}};
+\node[agentbox] (verifier) at ( 2.9, 0.2)
+  {\textbf{\small Verifier Agent}\\
+   {\scriptsize\color{black!60}VA \, $O(1)$ pairing verification}};
+\node[agentbox] (registry) at ( 0.0, -2.4)
+  {\textbf{\small Registry Agent}\\
+   {\scriptsize\color{black!60}RA \, sparse Merkle accumulator}};
 
-% ---- Phase boxes ----
+\node[ledgerbox] (ledger) at ( 0.0, -4.6)
+  {\textbf{\small Distributed Ledger}\\
+   {\scriptsize\color{black!60}$\mathcal{R}$ \, root anchoring}};
+
+% ==================== Domain boundaries =====================
 \begin{scope}[on background layer]
-  \node[phase, fit=(prover)(registry), inner sep=10pt,
-        label=left:{\tiny\sffamily Proof Generation Phase}] {};
-  \node[phase, fit=(verifier)(rp), inner sep=10pt,
-        label=right:{\tiny\sffamily Verification Phase}] {};
+  \node[zone, fit=(holder)(prover),
+        label={[font=\scriptsize\sffamily, text=black!45, anchor=north west]
+               north west:holder domain (wallet)}] {};
+  \node[zone, fit=(rp)(verifier),
+        label={[font=\scriptsize\sffamily, text=black!45, anchor=north east]
+               north east:relying-party domain}] {};
 \end{scope}
 
-% ---- Arrows ----
-\draw[->,thick,zkgreen]  (issuer) -- node[above,label]{VC + sig} (holder);
-\draw[->,thick,zkorange] (holder) -- node[right,label]{credential} (prover);
-\draw[->,thick,zkblue]   (prover) -- node[above,label]{zkProof $\pi$} (verifier);
-\draw[->,thick,zkblue]   (verifier) -- node[right,label]{accept/reject} (rp);
-\draw[->,thick,dashed,zkgray] (prover)   -- node[right,label]{query rev.} (registry);
-\draw[->,thick,dashed,zkgray] (registry) -- node[right,label]{acc. state} (ledger);
-\draw[->,thick,dashed,zkgray] (registry) -- node[above,label]{acc. root} (verifier);
-\draw[->,thick,zkorange] (rp) -- node[right,label]{auth. request} (holder);
-\draw[->,thick,zkorange] (holder) to[bend right=20] node[below,label]{DID auth.} (prover);
+% ==================== Protocol messages =====================
+% (1) Issuance -- one-time
+\draw[msg] (issuer) -- node[lbl, above]
+  {$\mathsf{VC} = \mathsf{Sign}_{\mathsf{sk}_\mathcal{I}}(\mathsf{attrs})$}
+  node[stp, below=2.5pt] {1} (holder);
+
+% (2) Authentication request
+\draw[msg] (rp) -- node[lbl, above]
+  {$\mathsf{AuthRequest}(\phi, \mathsf{nonce})$}
+  node[stp, below=2.5pt] {2} (holder);
+
+% (3) Holder hands credential to its PA
+\draw[msg] (holder.south west) -- node[lbl, left=2pt]
+  {$\mathsf{VC},\, \mathsf{sk}_H$}
+  node[stp, right=2pt] {3} (prover.north east);
+
+% (4) Revocation witness (bidirectional)
+\draw[msg, <->] (prover.south east) -- node[lbl, left=2pt]
+  {$\rho_{\mathsf{nonmember}}$}
+  node[stp, right=2pt] {4} (registry.north west);
+
+% (5) Proof transmission
+\draw[msg] (prover) -- node[lbl, above]
+  {$\pi,\, \eta,\, \mathsf{pubInputs}$}
+  node[stp, below=2.5pt] {5} (verifier);
+
+% (6) Root consistency check (bidirectional)
+\draw[msg, <->] (verifier.south west) -- node[lbl, right=2pt]
+  {$\mathsf{root}_{\mathsf{acc}}$}
+  node[stp, left=2pt] {6} (registry.north east);
+
+% (7) Decision
+\draw[msg] (verifier.north east) -- node[lbl, right=2pt]
+  {accept / reject}
+  node[stp, left=2pt] {7} (rp.south west);
+
+% ==================== On-chain operation ====================
+\draw[chain] (registry) -- node[lbl, right=2pt]
+  {anchor $\mathsf{root}_{\mathsf{acc}}$ (per epoch)} (ledger);
+
+% ==================== Legend ================================
+\begin{scope}[shift={(-6.9, -4.2)}]
+  \node[font=\scriptsize\bfseries\sffamily, anchor=west] at (0, 0.5) {Legend};
+  \draw[msg]   (0, 0) -- (0.8, 0);
+  \node[font=\scriptsize\sffamily, anchor=west] at (0.95, 0) {protocol message};
+  \draw[chain] (0, -0.5) -- (0.8, -0.5);
+  \node[font=\scriptsize\sffamily, anchor=west] at (0.95, -0.5) {on-chain operation};
+  \node[stp] at (0.4, -1.0) {$n$};
+  \node[font=\scriptsize\sffamily, anchor=west] at (0.95, -1.0) {protocol step order};
+\end{scope}
 
 \end{tikzpicture}
 \end{center}
