@@ -46,6 +46,12 @@
 \definecolor{zkred}{RGB}{227,26,28}
 \definecolor{zkgray}{RGB}{150,150,150}
 
+% Inline circled protocol-step number (shared by Figs. 1 and 2)
+\newcommand{\pstep}[1]{\tikz[baseline=(s.base)]{%
+  \node[circle, draw=black, fill=white, line width=0.6pt,
+        inner sep=0.6pt, minimum size=3.2mm,
+        font=\tiny\bfseries\sffamily] (s) {#1};}}
+
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
 \newtheorem{definition}{Definition}
@@ -561,89 +567,85 @@ domain (wallet) from the relying-party domain.}
 ]
 
 % ==================== Nodes (clean grid) ====================
-\node[principal] (issuer) at (-5.8, 3.0)
+\node[principal] (issuer) at (-6.6, 3.4)
   {\textbf{\small Issuer}\\
    {\scriptsize\color{black!60}$\mathcal{I}$ \, credential authority}};
-\node[principal] (holder) at ( 0.0, 3.0)
+\node[principal] (holder) at (-0.9, 3.4)
   {\textbf{\small Holder}\\
    {\scriptsize\color{black!60}$\mathcal{H}$ \, DID controller}};
-\node[principal] (rp)     at ( 5.8, 3.0)
+\node[principal] (rp)     at ( 6.6, 3.4)
   {\textbf{\small Relying Party}\\
    {\scriptsize\color{black!60}$\mathcal{V}$ \, service provider}};
 
-\node[agentbox] (prover)   at (-2.9, 0.2)
+\node[agentbox] (prover)   at (-3.9, 0.0)
   {\textbf{\small Prover Agent}\\
    {\scriptsize\color{black!60}PA \, Groth16 proof generation}};
-\node[agentbox] (verifier) at ( 2.9, 0.2)
+\node[agentbox] (verifier) at ( 3.9, 0.0)
   {\textbf{\small Verifier Agent}\\
    {\scriptsize\color{black!60}VA \, $O(1)$ pairing verification}};
-\node[agentbox] (registry) at ( 0.0, -2.4)
+\node[agentbox] (registry) at ( 0.0, -3.0)
   {\textbf{\small Registry Agent}\\
    {\scriptsize\color{black!60}RA \, sparse Merkle accumulator}};
 
-\node[ledgerbox] (ledger) at ( 0.0, -4.6)
+\node[ledgerbox] (ledger) at ( 0.0, -5.2)
   {\textbf{\small Distributed Ledger}\\
    {\scriptsize\color{black!60}$\mathcal{R}$ \, root anchoring}};
 
 % ==================== Domain boundaries =====================
 \begin{scope}[on background layer]
   \node[zone, fit=(holder)(prover),
-        label={[font=\scriptsize\sffamily, text=black!45, anchor=north west]
-               north west:holder domain (wallet)}] {};
+        label={[font=\scriptsize\sffamily, text=black!45, anchor=south west]
+               above left:holder domain (wallet)}] {};
   \node[zone, fit=(rp)(verifier),
-        label={[font=\scriptsize\sffamily, text=black!45, anchor=north east]
-               north east:relying-party domain}] {};
+        label={[font=\scriptsize\sffamily, text=black!45, anchor=south east]
+               above right:relying-party domain}] {};
 \end{scope}
 
 % ==================== Protocol messages =====================
 % (1) Issuance -- one-time
-\draw[msg] (issuer) -- node[lbl, above]
+\draw[msg] (issuer) -- node[lbl, above=1pt]
   {$\mathsf{VC} = \mathsf{Sign}_{\mathsf{sk}_\mathcal{I}}(\mathsf{attrs})$}
-  node[stp, below=2.5pt] {1} (holder);
+  node[lbl, below=1pt] {\pstep{1}} (holder);
 
 % (2) Authentication request
-\draw[msg] (rp) -- node[lbl, above]
+\draw[msg] (rp) -- node[lbl, above=1pt]
   {$\mathsf{AuthRequest}(\phi, \mathsf{nonce})$}
-  node[stp, below=2.5pt] {2} (holder);
+  node[lbl, below=1pt] {\pstep{2}} (holder);
 
 % (3) Holder hands credential to its PA
-\draw[msg] (holder.south west) -- node[lbl, left=2pt]
-  {$\mathsf{VC},\, \mathsf{sk}_H$}
-  node[stp, right=2pt] {3} (prover.north east);
+\draw[msg] (holder.south) -- node[lbl, sloped, above=2pt]
+  {\pstep{3}\; $\mathsf{VC},\, \mathsf{sk}_H$} (prover.north);
 
 % (4) Revocation witness (bidirectional)
-\draw[msg, <->] (prover.south east) -- node[lbl, left=2pt]
-  {$\rho_{\mathsf{nonmember}}$}
-  node[stp, right=2pt] {4} (registry.north west);
+\draw[msg, <->] (prover.south) -- node[lbl, sloped, above=2pt]
+  {\pstep{4}\; $\rho_{\mathsf{nonmember}}$} (registry.west);
 
 % (5) Proof transmission
-\draw[msg] (prover) -- node[lbl, above]
+\draw[msg] (prover) -- node[lbl, above=1pt]
   {$\pi,\, \eta,\, \mathsf{pubInputs}$}
-  node[stp, below=2.5pt] {5} (verifier);
+  node[lbl, below=1pt] {\pstep{5}} (verifier);
 
 % (6) Root consistency check (bidirectional)
-\draw[msg, <->] (verifier.south west) -- node[lbl, right=2pt]
-  {$\mathsf{root}_{\mathsf{acc}}$}
-  node[stp, left=2pt] {6} (registry.north east);
+\draw[msg, <->] (verifier.south) -- node[lbl, sloped, above=2pt]
+  {\pstep{6}\; $\mathsf{root}_{\mathsf{acc}}$} (registry.east);
 
 % (7) Decision
-\draw[msg] (verifier.north east) -- node[lbl, right=2pt]
-  {accept / reject}
-  node[stp, left=2pt] {7} (rp.south west);
+\draw[msg] (verifier.north) -- node[lbl, sloped, above=2pt]
+  {\pstep{7}\; accept / reject} (rp.south);
 
 % ==================== On-chain operation ====================
-\draw[chain] (registry) -- node[lbl, right=2pt]
+\draw[chain] (registry) -- node[lbl, right=3pt]
   {anchor $\mathsf{root}_{\mathsf{acc}}$ (per epoch)} (ledger);
 
 % ==================== Legend ================================
-\begin{scope}[shift={(-6.9, -4.2)}]
-  \node[font=\scriptsize\bfseries\sffamily, anchor=west] at (0, 0.5) {Legend};
+\begin{scope}[shift={(-7.6, -4.6)}]
+  \node[font=\scriptsize\bfseries\sffamily, anchor=west] at (0, 0.55) {Legend};
   \draw[msg]   (0, 0) -- (0.8, 0);
   \node[font=\scriptsize\sffamily, anchor=west] at (0.95, 0) {protocol message};
-  \draw[chain] (0, -0.5) -- (0.8, -0.5);
-  \node[font=\scriptsize\sffamily, anchor=west] at (0.95, -0.5) {on-chain operation};
-  \node[stp] at (0.4, -1.0) {$n$};
-  \node[font=\scriptsize\sffamily, anchor=west] at (0.95, -1.0) {protocol step order};
+  \draw[chain] (0, -0.55) -- (0.8, -0.55);
+  \node[font=\scriptsize\sffamily, anchor=west] at (0.95, -0.55) {on-chain operation};
+  \node[font=\scriptsize\sffamily, anchor=west] at (0.15, -1.1)
+    {\pstep{n}\; protocol step order};
 \end{scope}
 
 \end{tikzpicture}
@@ -687,96 +689,126 @@ verification.
 
 % ---- Figure 2: Sequence Diagram ------------------------------------
 \begin{figure*}[t]
-\caption{ZKAuth Authentication Sequence Diagram. Blue solid arrows
-indicate classical DID/VC operations; green dashed arrows indicate
-zk-SNARK proof operations; orange dot-dash arrows indicate on-chain
-registry operations. Processing boxes (rectangles) show local
-computation steps with the operation described internally. Phase
-separators delimit the three protocol phases.}
+\caption{ZKAuth Authentication Sequence Diagram. Circled numbers
+match the protocol steps of Fig.~\ref{fig:overview} (step~3, the
+holder-to-PA handoff, is internal to the combined
+Holder\,$+$\,PA lifeline). Solid arrows denote request messages;
+dashed arrows denote responses; \emph{on-chain} marks reads of
+ledger-anchored state. White rectangles on a lifeline are local
+computations; gray vertical bars are activations. Shaded horizontal
+bands delimit the three protocol phases.}
 \label{fig:sequence}
 \begin{center}
 \begin{tikzpicture}[
   >=Stealth,
-  font=\small\sffamily,
-  lifeline/.style={draw=zkgray!50, thin, dashed},
-  msg/.style={->, thick},
-  msgblue/.style={msg, color=zkblue},
-  msggreen/.style={msg, color=zkgreen, dashed},
-  msgorange/.style={msg, color=zkorange, dash dot},
-  proc/.style={draw, fill=white, minimum width=2.2cm,
-               minimum height=0.55cm, align=center, font=\tiny\sffamily},
-  phase/.style={draw=zkgray!40, dashed, fill=zkgray!5}
+  font=\sffamily,
+  head/.style={draw=black, line width=0.6pt, rounded corners=2pt,
+               minimum width=2.9cm, minimum height=1.0cm,
+               align=center, fill=white},
+  lifeline/.style={draw=black!40, thin, dash pattern=on 2.2pt off 1.8pt},
+  msg/.style={->, line width=0.7pt, draw=black},
+  ret/.style={->, line width=0.7pt, draw=black!55, dashed},
+  lbl/.style={font=\scriptsize\sffamily, fill=white, inner sep=1.5pt},
+  proc/.style={draw=black, line width=0.6pt, fill=white,
+               align=center, font=\scriptsize\sffamily,
+               inner sep=3.5pt, rounded corners=1.5pt},
+  act/.style={fill=black!12, draw=black!50, line width=0.4pt},
+  band/.style={fill=black!4, draw=none},
+  phlbl/.style={font=\scriptsize\bfseries\sffamily, text=black!50,
+                anchor=west}
 ]
 
 % ---- X positions ----
-\def\xH{0}    % Holder / PA
-\def\xI{-4}   % Issuer
-\def\xVA{5}   % Verifier Agent
-\def\xRA{9}   % Registry Agent / Ledger
-\def\ymax{-15}
+\def\xI{-6.3}   \def\xH{-2.1}   \def\xVA{2.7}   \def\xRA{6.9}
+\def\xmin{-7.9} \def\xmax{8.3}
 
-% ---- Headers ----
-\foreach \x/\lbl in {\xI/Issuer $\mathcal{I}$, \xH/Holder $\mathcal{H}$ + PA,
-                      \xVA/Verifier Agent (VA), \xRA/Registry Agent (RA)} {
-  \node[draw, fill=zkblue!10, minimum width=2.6cm,
-        minimum height=0.7cm, align=center, font=\small\bfseries\sffamily]
-    at (\x, 0) {\lbl};
-  \draw[lifeline] (\x, -0.35) -- (\x, \ymax);
+% ==================== Phase bands (background) ==============
+\fill[band] (\xmin, -1.00) rectangle (\xmax, -3.30);
+\fill[band] (\xmin, -3.70) rectangle (\xmax, -9.20);
+\fill[band] (\xmin, -9.60) rectangle (\xmax, -14.80);
+\node[phlbl] at (\xmin+0.15, -1.30) {PHASE 1 --- CREDENTIAL ISSUANCE (ONE-TIME)};
+\node[phlbl] at (\xmin+0.15, -4.00) {PHASE 2 --- PROOF GENERATION};
+\node[phlbl] at (\xmin+0.15, -9.90) {PHASE 3 --- VERIFICATION};
+
+% ==================== Lifelines and headers =================
+\foreach \x/\nm/\rl in {%
+    \xI/Issuer/{$\mathcal{I}$ \, credential authority},
+    \xH/{Holder $+$ PA}/{$\mathcal{H}$ \, wallet, proof generation},
+    \xVA/Verifier Agent/{VA \, relying-party side},
+    \xRA/Registry Agent/{RA \, accumulator state}} {
+  \draw[lifeline] (\x, -0.50) -- (\x, -15.10);
+  \node[head] at (\x, 0)
+    {\textbf{\small \nm}\\{\scriptsize\color{black!60}\rl}};
 }
 
-% ----- Phase 1: Credential Issuance -----
-\draw[phase, rounded corners=4pt] (-5.2, -0.7) rectangle (1.2, -3.0);
-\node[font=\tiny\sffamily\bfseries, text=zkgray] at (-2, -0.85) {Phase 1: Credential Issuance};
+% ==================== Activation bars =======================
+\fill[act] (\xI-0.10,  -1.80) rectangle (\xI+0.10,  -2.35);
+\fill[act] (\xH-0.10,  -1.80) rectangle (\xH+0.10,  -3.10);
+\fill[act] (\xVA-0.10, -4.00) rectangle (\xVA+0.10, -4.50);
+\fill[act] (\xH-0.10,  -4.25) rectangle (\xH+0.10,  -8.80);
+\fill[act] (\xRA-0.10, -4.90) rectangle (\xRA+0.10, -6.10);
+\fill[act] (\xVA-0.10, -8.30) rectangle (\xVA+0.10, -14.50);
+\fill[act] (\xRA-0.10, -10.90) rectangle (\xRA+0.10, -12.00);
 
-\draw[msgblue] (\xI, -1.2) -- (\xH, -1.2)
-  node[midway, above, font=\tiny] {VC $=$ Sign$_{\mathsf{sk}_I}$(attrs)};
-\node[proc] at (\xH, -1.8) {Poseidon\\hash attrs};
-\draw[msgblue] (\xH, -2.3) -- (\xH, -2.3)
-  node[right, font=\tiny] {store $h_{\mathsf{VC}}$ in wallet};
+% ==================== Phase 1 ===============================
+\draw[msg] (\xI, -2.05) -- (\xH, -2.05)
+  node[lbl, midway, above=1pt]
+  {\pstep{1}\; $\mathsf{VC} = \mathsf{Sign}_{\mathsf{sk}_\mathcal{I}}(\mathsf{attrs})$};
+\node[proc] at (\xH, -2.85)
+  {$h_{\mathsf{VC}} \gets \mathsf{Poseidon}(\mathsf{attrs})$;\;
+   store $\mathsf{VC}$ in wallet};
 
-% ----- Phase 2: Auth Request + Proof Generation -----
-\draw[phase, rounded corners=4pt] (-5.2, -3.3) rectangle (10.5, -9.5);
-\node[font=\tiny\sffamily\bfseries, text=zkgray] at (0.5, -3.45) {Phase 2: Proof Generation};
+% ==================== Phase 2 ===============================
+\draw[msg] (\xVA, -4.40) -- (\xH, -4.40)
+  node[lbl, midway, above=1pt]
+  {\pstep{2}\; $\mathsf{AuthRequest}(\phi, \mathsf{nonce})$};
 
-\draw[msgblue] (\xVA, -3.8) -- (\xH, -3.8)
-  node[midway, above, font=\tiny] {AuthRequest($\phi$, nonce)};
+\draw[msg] (\xH, -5.30) -- (\xRA, -5.30)
+  node[lbl, midway, above=1pt]
+  {\pstep{4}\; $\mathsf{getNonMembershipProof}(\mathsf{cred\_id})$};
+\draw[ret] (\xRA, -6.00) -- (\xH, -6.00)
+  node[lbl, midway, above=1pt]
+  {$\rho_{\mathsf{nonmember}},\; \mathsf{root}_{\mathsf{acc}}$};
 
-\draw[msgorange] (\xH, -4.5) -- (\xRA, -4.5)
-  node[midway, above, font=\tiny] {getNonMembershipProof($\mathsf{cred\_id}$)};
-\draw[msgorange] (\xRA, -5.1) -- (\xH, -5.1)
-  node[midway, above, font=\tiny] {$\rho_{\mathsf{nonmember}}$, root$_{\mathsf{acc}}$};
+\node[proc, align=left] at (\xH, -7.15)
+  {generate Groth16 proof $\pi$ over circuit $\mathcal{C}$\\
+   $\eta \gets H(\mathsf{sk}_H \,\|\, \mathsf{nonce} \,\|\, r)$,
+   \; $r \gets \{0,1\}^\lambda$};
 
-\node[proc, minimum width=3.0cm, minimum height=0.7cm] at (\xH, -5.9)
-  {Generate Groth16 $\pi$\\over circuit $\mathcal{C}$};
-\node[proc] at (\xH, -6.7) {$\eta = H(\mathsf{sk}_H \| \mathsf{nonce} \| r)$};
+\draw[msg] (\xH, -8.55) -- (\xVA, -8.55)
+  node[lbl, midway, above=1pt]
+  {\pstep{5}\; $\pi,\; \eta,\; \mathsf{pubInputs},\; \mathsf{root}_{\mathsf{acc}}$};
 
-\draw[msggreen] (\xH, -7.5) -- (\xVA, -7.5)
-  node[midway, above, font=\tiny] {$\pi, \eta, \mathsf{pubInputs},$ root$_{\mathsf{acc}}$};
+% ==================== Phase 3 ===============================
+\node[proc] at (\xVA, -10.30)
+  {assert $\eta \notin \mathsf{NullifierSet}$};
 
-% ----- Phase 3: Verification -----
-\draw[phase, rounded corners=4pt] (3.7, -9.8) rectangle (10.5, -14.5);
-\node[font=\tiny\sffamily\bfseries, text=zkgray] at (6.8, -9.95) {Phase 3: Verification};
+\draw[msg] (\xVA, -11.15) -- (\xRA, -11.15)
+  node[lbl, midway, above=1pt] {\pstep{6}\; $\mathsf{getRoot}()$};
+\draw[ret] (\xRA, -11.85) -- (\xVA, -11.85)
+  node[lbl, midway, above=1pt]
+  {$\mathsf{root}_{\mathsf{acc}}$ \,{\itshape(on-chain)}};
 
-\node[proc] at (\xVA, -10.5) {Check $\eta \notin$ NullifierSet};
-\draw[msgorange] (\xVA, -11.2) -- (\xRA, -11.2)
-  node[midway, above, font=\tiny] {getRoot()};
-\draw[msgorange] (\xRA, -11.8) -- (\xVA, -11.8)
-  node[midway, above, font=\tiny] {root$_{\mathsf{acc}}$ (on-chain)};
-\node[proc, minimum width=3.0cm] at (\xVA, -12.5)
-  {Verify $\pi$: 3 pairings\\$O(1)$};
-\node[proc] at (\xVA, -13.3) {Insert $\eta$ into NullifierSet};
-\draw[msgblue] (\xVA, -14.0) -- (\xH, -14.0)
-  node[midway, above, font=\tiny] {accept / reject};
+\node[proc] at (\xVA, -12.75)
+  {verify $\pi$: 3 pairings, $O(1)$};
+\node[proc] at (\xVA, -13.60)
+  {$\mathsf{NullifierSet} \gets \mathsf{NullifierSet} \cup \{\eta\}$};
 
-% ---- Legend ----
-\node[font=\tiny\sffamily, anchor=west] at (-5.8, -15.5)
-  {\textbf{Legend:}};
-\draw[msgblue, thin] (-5.8,-16.0) -- (-4.2,-16.0)
-  node[right, font=\tiny] {Classical DID/VC};
-\draw[msggreen, thin] (-5.8,-16.5) -- (-4.2,-16.5)
-  node[right, font=\tiny] {zk-SNARK proof};
-\draw[msgorange, thin] (-5.8,-17.0) -- (-4.2,-17.0)
-  node[right, font=\tiny] {On-chain registry};
+\draw[msg] (\xVA, -14.35) -- (\xH, -14.35)
+  node[lbl, midway, above=1pt] {\pstep{7}\; accept / reject};
+
+% ==================== Legend ================================
+\begin{scope}[shift={(\xmin, -15.70)}]
+  \node[font=\scriptsize\bfseries\sffamily, anchor=west] at (0, 0) {Legend};
+  \draw[msg] (2.0, 0) -- (2.8, 0);
+  \node[font=\scriptsize\sffamily, anchor=west] at (2.95, 0) {request};
+  \draw[ret] (5.2, 0) -- (6.0, 0);
+  \node[font=\scriptsize\sffamily, anchor=west] at (6.15, 0) {response};
+  \fill[act] (8.5, -0.13) rectangle (8.7, 0.13);
+  \node[font=\scriptsize\sffamily, anchor=west] at (8.85, 0) {activation};
+  \node[font=\scriptsize\sffamily, anchor=west] at (11.2, 0)
+    {\pstep{n}\; step of Fig.~\ref{fig:overview}};
+\end{scope}
 
 \end{tikzpicture}
 \end{center}
