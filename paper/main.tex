@@ -187,8 +187,8 @@ DID context, achieves constant-time verification ($O(1)$, three pairings)
 and compact 192-byte proofs but addresses neither W3C DID-compatible
 credential revocation nor per-session unlinkability via randomized
 nullifiers, and provides no composite privacy metric enabling systematic
-comparison across schemes. These three gaps---revocation, unlinkability,
-and a unified evaluation metric---directly motivate ZKAuth.
+comparison across schemes. These three gaps (revocation, unlinkability,
+and a unified evaluation metric) directly motivate ZKAuth.
 
 \subsection{Contributions}
 
@@ -726,9 +726,9 @@ bands delimit the three protocol phases.}
 \fill[band] (\xmin, -1.00) rectangle (\xmax, -3.30);
 \fill[band] (\xmin, -3.70) rectangle (\xmax, -9.20);
 \fill[band] (\xmin, -9.60) rectangle (\xmax, -14.80);
-\node[phlbl] at (\xmin+0.15, -1.30) {PHASE 1 --- CREDENTIAL ISSUANCE (ONE-TIME)};
-\node[phlbl] at (\xmin+0.15, -4.00) {PHASE 2 --- PROOF GENERATION};
-\node[phlbl] at (\xmin+0.15, -9.90) {PHASE 3 --- VERIFICATION};
+\node[phlbl] at (\xmin+0.15, -1.30) {PHASE 1: CREDENTIAL ISSUANCE (ONE-TIME)};
+\node[phlbl] at (\xmin+0.15, -4.00) {PHASE 2: PROOF GENERATION};
+\node[phlbl] at (\xmin+0.15, -9.90) {PHASE 3: VERIFICATION};
 
 % ==================== Lifelines and headers =================
 \foreach \x/\nm/\rl in {%
@@ -1118,14 +1118,14 @@ Definition~\ref{def:ppas}.}
   legend cell align=left
 ]
 
-% ZKAuth
+% ZKAuth (data: data/results/raw_rounds.csv, CI95 = t*std/sqrt(n))
 \addplot+[color=zkblue, mark=*, mark size=1.5pt, thick,
   error bars/.cd, y dir=both, y explicit]
 coordinates {
-  (1,0.9925)+-(0,0.0001) (2,0.9923)+-(0,0.0001) (3,0.9924)+-(0,0.0001)
-  (4,0.9926)+-(0,0.0001) (5,0.9922)+-(0,0.0001) (6,0.9925)+-(0,0.0001)
-  (7,0.9923)+-(0,0.0001) (8,0.9924)+-(0,0.0001) (9,0.9925)+-(0,0.0001)
-  (10,0.9924)+-(0,0.0001)
+  (1,0.99242)+-(0,0.00007) (2,0.99242)+-(0,0.00007) (3,0.99242)+-(0,0.00007)
+  (4,0.99241)+-(0,0.00007) (5,0.99243)+-(0,0.00007) (6,0.99237)+-(0,0.00007)
+  (7,0.99241)+-(0,0.00007) (8,0.99243)+-(0,0.00007) (9,0.99238)+-(0,0.00007)
+  (10,0.99239)+-(0,0.00007)
 };
 \addlegendentry{ZKAuth}
 
@@ -1133,10 +1133,10 @@ coordinates {
 \addplot+[color=zkgreen, mark=square*, mark size=1.5pt, thick,
   error bars/.cd, y dir=both, y explicit]
 coordinates {
-  (1,0.9807)+-(0,0.0001) (2,0.9808)+-(0,0.0001) (3,0.9806)+-(0,0.0001)
-  (4,0.9807)+-(0,0.0001) (5,0.9808)+-(0,0.0001) (6,0.9807)+-(0,0.0001)
-  (7,0.9806)+-(0,0.0001) (8,0.9808)+-(0,0.0001) (9,0.9807)+-(0,0.0001)
-  (10,0.9807)+-(0,0.0001)
+  (1,0.98057)+-(0,0.00018) (2,0.98068)+-(0,0.00018) (3,0.98075)+-(0,0.00018)
+  (4,0.98075)+-(0,0.00018) (5,0.98082)+-(0,0.00018) (6,0.98080)+-(0,0.00018)
+  (7,0.98062)+-(0,0.00018) (8,0.98054)+-(0,0.00017) (9,0.98068)+-(0,0.00018)
+  (10,0.98066)+-(0,0.00018)
 };
 \addlegendentry{Groth16 (Baseline$^\dagger$)}
 
@@ -1144,10 +1144,10 @@ coordinates {
 \addplot+[color=zkorange, mark=triangle*, mark size=1.5pt, thick,
   error bars/.cd, y dir=both, y explicit]
 coordinates {
-  (1,0.8435)+-(0,0.0003) (2,0.8432)+-(0,0.0003) (3,0.8434)+-(0,0.0003)
-  (4,0.8433)+-(0,0.0003) (5,0.8432)+-(0,0.0003) (6,0.8434)+-(0,0.0003)
-  (7,0.8433)+-(0,0.0003) (8,0.8432)+-(0,0.0003) (9,0.8434)+-(0,0.0003)
-  (10,0.8433)+-(0,0.0003)
+  (1,0.84299)+-(0,0.00067) (2,0.84390)+-(0,0.00066) (3,0.84352)+-(0,0.00066)
+  (4,0.84299)+-(0,0.00069) (5,0.84328)+-(0,0.00067) (6,0.84366)+-(0,0.00066)
+  (7,0.84328)+-(0,0.00068) (8,0.84306)+-(0,0.00065) (9,0.84272)+-(0,0.00067)
+  (10,0.84384)+-(0,0.00069)
 };
 \addlegendentry{ZK-STARK}
 
@@ -1155,10 +1155,10 @@ coordinates {
 \addplot+[color=zkred, mark=diamond*, mark size=1.5pt, thick,
   error bars/.cd, y dir=both, y explicit]
 coordinates {
-  (1,0.5876)+-(0,0.0003) (2,0.5874)+-(0,0.0003) (3,0.5876)+-(0,0.0003)
-  (4,0.5875)+-(0,0.0003) (5,0.5874)+-(0,0.0003) (6,0.5876)+-(0,0.0003)
-  (7,0.5875)+-(0,0.0003) (8,0.5874)+-(0,0.0003) (9,0.5875)+-(0,0.0003)
-  (10,0.5875)+-(0,0.0003)
+  (1,0.58787)+-(0,0.00121) (2,0.58781)+-(0,0.00123) (3,0.58649)+-(0,0.00122)
+  (4,0.58756)+-(0,0.00121) (5,0.58744)+-(0,0.00119) (6,0.58750)+-(0,0.00124)
+  (7,0.58771)+-(0,0.00117) (8,0.58769)+-(0,0.00123) (9,0.58820)+-(0,0.00126)
+  (10,0.58705)+-(0,0.00115)
 };
 \addlegendentry{Bulletproofs}
 
@@ -1204,39 +1204,40 @@ Table~\ref{tab:attacks}.}
   enlarge x limits=0.15,
 ]
 
+% Data: data/results/attack_resistance.csv (values in %)
 \addplot+[fill=zkblue!70, draw=zkblue,
   error bars/.cd, y dir=both, y explicit] coordinates {
-  (Replay Attack,      2.0)+-(0,0.18)
-  (Correlation Attack, 0.8)+-(0,0.09)
-  (Linkability Attack, 1.1)+-(0,0.12)
-  (Sybil Attack,       1.4)+-(0,0.14)
+  (Replay Attack,      0.56)+-(0,0.22)
+  (Correlation Attack, 0.82)+-(0,0.16)
+  (Linkability Attack, 1.13)+-(0,0.18)
+  (Sybil Attack,       0.63)+-(0,0.13)
 };
 \addlegendentry{ZKAuth}
 
 \addplot+[fill=zkgreen!70, draw=zkgreen,
   error bars/.cd, y dir=both, y explicit] coordinates {
-  (Replay Attack,      3.8)+-(0,0.25)
-  (Correlation Attack, 4.1)+-(0,0.28)
-  (Linkability Attack, 5.7)+-(0,0.31)
-  (Sybil Attack,       2.9)+-(0,0.22)
+  (Replay Attack,      1.88)+-(0,0.52)
+  (Correlation Attack, 4.51)+-(0,0.48)
+  (Linkability Attack, 5.43)+-(0,0.55)
+  (Sybil Attack,       2.71)+-(0,0.69)
 };
 \addlegendentry{Groth16 (Baseline$^\dagger$)}
 
 \addplot+[fill=zkorange!70, draw=zkorange,
   error bars/.cd, y dir=both, y explicit] coordinates {
-  (Replay Attack,      2.9)+-(0,0.20)
-  (Correlation Attack, 2.1)+-(0,0.17)
-  (Linkability Attack, 2.9)+-(0,0.19)
-  (Sybil Attack,       2.0)+-(0,0.16)
+  (Replay Attack,      1.45)+-(0,0.36)
+  (Correlation Attack, 2.31)+-(0,0.34)
+  (Linkability Attack, 2.89)+-(0,0.35)
+  (Sybil Attack,       1.65)+-(0,0.31)
 };
 \addlegendentry{ZK-STARK}
 
 \addplot+[fill=zkred!70, draw=zkred,
   error bars/.cd, y dir=both, y explicit] coordinates {
-  (Replay Attack,      5.2)+-(0,0.33)
-  (Correlation Attack, 6.3)+-(0,0.38)
-  (Linkability Attack, 8.8)+-(0,0.45)
-  (Sybil Attack,       4.4)+-(0,0.30)
+  (Replay Attack,      2.85)+-(0,0.43)
+  (Correlation Attack, 7.06)+-(0,0.63)
+  (Linkability Attack, 8.71)+-(0,0.46)
+  (Sybil Attack,       4.74)+-(0,0.64)
 };
 \addlegendentry{Bulletproofs}
 
@@ -1283,39 +1284,40 @@ represent 95\% CI. Data are simulation-based.}
 % ----- Left plot: Verification Latency -----
 \nextgroupplot[
   ylabel={Verification Latency (ms)},
-  ymin=0, ymax=180,
+  ymin=0, ymax=200,
   legend to name=scalabilitylegend
 ]
 
+% Data: data/results/scalability.csv (10 repetitions per point, 95% CI)
 \addplot+[color=zkblue, mark=*, mark size=1.5pt, thick,
   error bars/.cd, y dir=both, y explicit] coordinates {
-  (1000,  1.20)+-(0,0.04) (2500,  1.21)+-(0,0.04) (5000,  1.21)+-(0,0.04)
-  (10000, 1.21)+-(0,0.05) (25000, 1.22)+-(0,0.05) (50000, 1.22)+-(0,0.05)
-  (100000, 1.23)+-(0,0.05)
+  (1000,  1.22)+-(0,0.02) (2500,  1.21)+-(0,0.01) (5000,  1.20)+-(0,0.02)
+  (10000, 1.20)+-(0,0.02) (25000, 1.22)+-(0,0.02) (50000, 1.21)+-(0,0.01)
+  (100000, 1.22)+-(0,0.01)
 };
 \addlegendentry{ZKAuth}
 
 \addplot+[color=zkgreen, mark=square*, mark size=1.5pt, thick,
   error bars/.cd, y dir=both, y explicit] coordinates {
-  (1000,  0.82)+-(0,0.03) (2500,  0.82)+-(0,0.03) (5000,  0.82)+-(0,0.03)
-  (10000, 0.82)+-(0,0.03) (25000, 0.82)+-(0,0.03) (50000, 0.82)+-(0,0.03)
-  (100000, 0.82)+-(0,0.03)
+  (1000,  0.82)+-(0,0.01) (2500,  0.82)+-(0,0.01) (5000,  0.82)+-(0,0.01)
+  (10000, 0.82)+-(0,0.01) (25000, 0.82)+-(0,0.01) (50000, 0.82)+-(0,0.01)
+  (100000, 0.82)+-(0,0.01)
 };
 \addlegendentry{Groth16 (Baseline$^\dagger$)}
 
 \addplot+[color=zkorange, mark=triangle*, mark size=1.5pt, thick,
   error bars/.cd, y dir=both, y explicit] coordinates {
-  (1000,  44.7)+-(0,1.2) (2500,  46.0)+-(0,1.3) (5000,  47.5)+-(0,1.4)
-  (10000, 49.3)+-(0,1.5) (25000, 52.1)+-(0,1.6) (50000, 54.8)+-(0,1.7)
-  (100000, 57.7)+-(0,1.8)
+  (1000,  44.76)+-(0,0.53) (2500,  53.55)+-(0,0.69) (5000,  60.08)+-(0,0.47)
+  (10000, 67.26)+-(0,0.97) (25000, 75.59)+-(0,0.66) (50000, 82.48)+-(0,1.21)
+  (100000, 88.40)+-(0,0.70)
 };
 \addlegendentry{ZK-STARK}
 
 \addplot+[color=zkred, mark=diamond*, mark size=1.5pt, thick,
   error bars/.cd, y dir=both, y explicit] coordinates {
-  (1000,  118.2)+-(0,2.5) (2500,  127.5)+-(0,2.7) (5000,  134.3)+-(0,2.9)
-  (10000, 141.7)+-(0,3.1) (25000, 152.0)+-(0,3.3) (50000, 162.8)+-(0,3.5)
-  (100000, 172.1)+-(0,3.7)
+  (1000,  118.72)+-(0,1.42) (2500,  130.11)+-(0,1.57) (5000,  140.55)+-(0,2.20)
+  (10000, 151.36)+-(0,0.69) (25000, 162.60)+-(0,1.73) (50000, 171.41)+-(0,2.22)
+  (100000, 180.19)+-(0,2.32)
 };
 \addlegendentry{Bulletproofs}
 
@@ -1328,30 +1330,30 @@ represent 95\% CI. Data are simulation-based.}
 
 \addplot+[color=zkblue, mark=*, mark size=1.5pt, thick,
   error bars/.cd, y dir=both, y explicit] coordinates {
-  (1000,  0.993)+-(0,0.0002) (2500,  0.993)+-(0,0.0002) (5000,  0.993)+-(0,0.0002)
-  (10000, 0.992)+-(0,0.0002) (25000, 0.992)+-(0,0.0002) (50000, 0.992)+-(0,0.0002)
-  (100000, 0.992)+-(0,0.0002)
+  (1000,  0.9929)+-(0,0.0005) (2500,  0.9930)+-(0,0.0007) (5000,  0.9930)+-(0,0.0007)
+  (10000, 0.9928)+-(0,0.0003) (25000, 0.9923)+-(0,0.0006) (50000, 0.9927)+-(0,0.0007)
+  (100000, 0.9929)+-(0,0.0009)
 };
 
 \addplot+[color=zkgreen, mark=square*, mark size=1.5pt, thick,
   error bars/.cd, y dir=both, y explicit] coordinates {
-  (1000,  0.981)+-(0,0.0002) (2500,  0.981)+-(0,0.0002) (5000,  0.981)+-(0,0.0002)
-  (10000, 0.981)+-(0,0.0002) (25000, 0.981)+-(0,0.0002) (50000, 0.981)+-(0,0.0002)
-  (100000, 0.981)+-(0,0.0002)
+  (1000,  0.9809)+-(0,0.0015) (2500,  0.9823)+-(0,0.0029) (5000,  0.9784)+-(0,0.0013)
+  (10000, 0.9791)+-(0,0.0019) (25000, 0.9824)+-(0,0.0020) (50000, 0.9814)+-(0,0.0018)
+  (100000, 0.9808)+-(0,0.0021)
 };
 
 \addplot+[color=zkorange, mark=triangle*, mark size=1.5pt, thick,
   error bars/.cd, y dir=both, y explicit] coordinates {
-  (1000,  0.843)+-(0,0.0005) (2500,  0.842)+-(0,0.0005) (5000,  0.841)+-(0,0.0005)
-  (10000, 0.840)+-(0,0.0005) (25000, 0.839)+-(0,0.0005) (50000, 0.837)+-(0,0.0005)
-  (100000, 0.835)+-(0,0.0005)
+  (1000,  0.8433)+-(0,0.0024) (2500,  0.8130)+-(0,0.0028) (5000,  0.7925)+-(0,0.0014)
+  (10000, 0.7685)+-(0,0.0034) (25000, 0.7409)+-(0,0.0025) (50000, 0.7173)+-(0,0.0050)
+  (100000, 0.6963)+-(0,0.0031)
 };
 
 \addplot+[color=zkred, mark=diamond*, mark size=1.5pt, thick,
   error bars/.cd, y dir=both, y explicit] coordinates {
-  (1000,  0.597)+-(0,0.0008) (2500,  0.583)+-(0,0.0008) (5000,  0.570)+-(0,0.0008)
-  (10000, 0.558)+-(0,0.0009) (25000, 0.541)+-(0,0.0009) (50000, 0.524)+-(0,0.0009)
-  (100000, 0.507)+-(0,0.0009)
+  (1000,  0.5772)+-(0,0.0036) (2500,  0.5705)+-(0,0.0029) (5000,  0.5715)+-(0,0.0030)
+  (10000, 0.5758)+-(0,0.0015) (25000, 0.5701)+-(0,0.0020) (50000, 0.5721)+-(0,0.0030)
+  (100000, 0.5724)+-(0,0.0033)
 };
 
 \end{groupplot}
@@ -1362,11 +1364,13 @@ represent 95\% CI. Data are simulation-based.}
 \end{figure*}
 
 ZKAuth and Groth16 maintain constant-time verification independent of
-registry size. ZK-STARK verification grows logarithmically ($\approx 29\%$
-increase from $10^3$ to $10^5$ DIDs), while Bulletproofs degrade by
-$45.6\%$ over the same range. On the PPAS axis, ZKAuth retains
-$\geq 0.992$ at $10^5$ DIDs, confirming that the framework's privacy
-properties do not erode under scale.
+registry size. ZK-STARK verification grows logarithmically
+($\approx 98\%$ increase from $10^3$ to $10^5$ DIDs, from $44.8$ to
+$88.4$~ms), while Bulletproofs degrade by $51.8\%$ over the same range,
+crossing the $V_{\max} = 120$~ms usability ceiling at every scale. On
+the PPAS axis, ZKAuth retains $\geq 0.992$ at $10^5$ DIDs, whereas
+ZK-STARK falls from $0.843$ to $0.696$, confirming that ZKAuth's
+privacy properties do not erode under scale.
 
 \subsection{Statistical Significance}
 
@@ -1391,7 +1395,7 @@ only, $\beta=1$), and PPAS-Z (ZK-completeness only, $\gamma=1$). ZKAuth
 under PPAS-L scores $0.990$ (vs. Groth16 $0.993$, disadvantage due to
 $1.21$ vs. $0.82$~ms verification latency; this $+0.39$~ms overhead is
 the direct cost of the 256 Poseidon constraints added for Merkle
-revocation---an explicit design trade-off accepted in exchange for the
+revocation, an explicit design trade-off accepted in exchange for the
 $\Delta\mathsf{CorRisk} = 0.033$ advantage captured by the $\beta$ term).
 Under PPAS-C, ZKAuth scores
 $0.992$ (vs. Groth16 $0.959$, a $3.4\%$ advantage from lower correlation
@@ -1454,9 +1458,9 @@ $1.84 \pm 0.095$~s may preclude use in time-critical flows (e.g.,
 payment authorization under 500~ms); hardware acceleration using FPGA
 or GPU MSM would be required. Second, ZKAuth inherits Groth16's circuit-specific trusted setup:
 production deployment requires a multi-party computation (MPC) ceremony
-per credential schema. Governance of this ceremony -- including who
+per credential schema. Governance of this ceremony (who
 participates, how transcript integrity is verified, and how the
-ceremony is repeated when a new schema is introduced -- must be
+ceremony is repeated when a new schema is introduced) must be
 specified at the organizational level. We recommend aligning ceremony
 procedures with established precedents (e.g., the Zcash Sapling setup
 or Hermez Network's Phase 2 ceremony) and using universal trusted
@@ -1527,17 +1531,24 @@ decisions, data interpretation, and intellectual contributions remain
 the sole responsibility of the human authors. This disclosure follows
 the ethical guidelines of IEEE for AI-assisted academic writing.
 
-This research was partially supported by the Funda\c{c}\~{a}o
-Amaz\^{o}nia de Amparo a Estudos e Pesquisas do Par\'{a} (FAPESPA),
-the Centro de Pesquisa e Desenvolvimento em Tecnologias Digitais para
-Informa\c{c}\~{a}o e Comunica\c{c}\~{a}o (PRODEPA), and SEC365
-Cybersecurity Solutions. The authors also thank the Laborat\'{o}rio de
-Intelig\^{e}ncia Computacional e Aprendizado (LICA), the Centro de
-Compet\^{e}ncia em Aplica\c{c}\~{o}es e Dados da Intelig\^{e}ncia
-Artificial (CCAD-IA), the Rede Nacional de Ensino e Pesquisa (RNP),
-and the Instituto Nacional de Ci\^{e}ncia e Tecnologia em Intelig\^{e}ncia
-Artificial na Amaz\^{o}nia (INCT iAmazonia) for providing computational
-infrastructure and research collaboration support.
+The authors acknowledge the Amazon Foundation for Research Support
+(FAPESPA), the Information and Communication Technology Company of the
+State of Par\'{a} (PRODEPA), the Government of the State of Par\'{a},
+and the Federal Government of Brazil for their institutional and
+financial support, which were essential to enabling the infrastructure,
+experimental testbeds, and interinstitutional collaborations
+underpinning this research. Special thanks are extended to the spinoff
+SEC365 and to the Laboratory of Informatics and Computing of the Amazon
+(LICA/UFRA) end Smart and Sustainable Cities Laboratory (LaCIS/UFPA),
+whose teams played a decisive role in the development, validation, and
+technical implementation of this work. The authors also acknowledge the
+High-Performance Computing and Artificial Intelligence Center
+(CCAD-IA/UFPA) and the National Education and Research Network (RNP)
+for providing computing resources and technical assistance during the
+experimental phases. This work was further supported by the National
+Institute of Science and Technology in Artificial Intelligence Applied
+to Smart and Sustainable Cities in the Brazilian Amazon
+(INCT iAmazon\'{i}a).
 
 % ====================================================================
 \ifCLASSOPTIONcaptionsoff
