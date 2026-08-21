@@ -1092,30 +1092,38 @@ Fig.~\ref{fig:ppas_perf} shows the PPAS across ten evaluation rounds
 for all four schemes.
 
 % ---- Figure 4: PPAS Performance ------------------------------------
-\begin{figure}[t]
-\caption{Privacy-Preserving Authentication Score (PPAS) across 10
-evaluation rounds for all schemes. Error bars represent 95\% confidence
-intervals. ZKAuth achieves the highest PPAS ($0.9924 \pm 0.0001$),
-significantly outperforming all baselines ($p < 0.001$). Data are
-simulation-based; ground-truth PPAS parameters follow
-Definition~\ref{def:ppas}.}
+\begin{figure*}[t]
+\caption{Privacy-Preserving Authentication Score (PPAS) for all
+schemes: (a) per-round trajectories across the 10 evaluation rounds;
+(b) grand mean over the 10 rounds with 95\% confidence intervals
+(values annotated above each bar; CIs are smaller than the marker
+size at this scale). ZKAuth achieves the highest PPAS
+($0.9924 \pm 0.0001$), significantly outperforming all baselines
+($p < 0.001$). Data are simulation-based; ground-truth PPAS
+parameters follow Definition~\ref{def:ppas}.}
 \label{fig:ppas_perf}
 \begin{center}
 \begin{tikzpicture}
-\begin{axis}[
-  width=\columnwidth, height=5.5cm,
-  xlabel={Evaluation Round},
+\begin{groupplot}[
+  group style={group size=2 by 1, horizontal sep=2.2cm},
+  height=5.5cm,
+  grid=both, grid style={zkgray!25},
+  tick label style={font=\tiny},
+  label style={font=\small},
+  legend cell align=left
+]
+
+% ----- (a) Per-round trajectories -----
+\nextgroupplot[
+  width=0.56\textwidth,
+  xlabel={(a) Evaluation Round},
   ylabel={PPAS},
   xmin=0.5, xmax=10.5,
   ymin=0.40, ymax=1.05,
   xtick={1,2,3,4,5,6,7,8,9,10},
   ytick={0.5,0.6,0.7,0.8,0.9,1.0},
   legend style={at={(0.02,0.02)}, anchor=south west, font=\tiny,
-                legend columns=2},
-  grid=both, grid style={zkgray!25},
-  tick label style={font=\tiny},
-  label style={font=\small},
-  legend cell align=left
+                legend columns=2}
 ]
 
 % ZKAuth (data: data/results/raw_rounds.csv, CI95 = t*std/sqrt(n))
@@ -1162,10 +1170,37 @@ coordinates {
 };
 \addlegendentry{Bulletproofs}
 
-\end{axis}
+% ----- (b) Grand mean over 10 rounds (data: aggregate_ppas.csv) -----
+\nextgroupplot[
+  width=0.40\textwidth,
+  ybar=0pt,
+  bar width=16pt,
+  xlabel={(b) Grand Mean (10 rounds)},
+  ylabel={PPAS},
+  ymin=0, ymax=1.15,
+  ytick={0,0.2,0.4,0.6,0.8,1.0},
+  symbolic x coords={ZKAuth, Groth16, ZK-STARK, BP},
+  xtick={ZKAuth, Groth16, ZK-STARK, BP},
+  x tick label style={font=\tiny},
+  enlarge x limits=0.18,
+  nodes near coords,
+  every node near coord/.append style={font=\tiny, text=black,
+    /pgf/number format/.cd, fixed, precision=4},
+  legend style={draw=none}
+]
+\addplot+[fill=zkblue!70, draw=zkblue, bar shift=0pt, error bars/.cd, y dir=both, y explicit]
+  coordinates {(ZKAuth,0.9924)+-(0,0.00001)};
+\addplot+[fill=zkgreen!70, draw=zkgreen, bar shift=0pt, error bars/.cd, y dir=both, y explicit]
+  coordinates {(Groth16,0.9807)+-(0,0.00007)};
+\addplot+[fill=zkorange!70, draw=zkorange, bar shift=0pt, error bars/.cd, y dir=both, y explicit]
+  coordinates {(ZK-STARK,0.8433)+-(0,0.00028)};
+\addplot+[fill=zkred!70, draw=zkred, bar shift=0pt, error bars/.cd, y dir=both, y explicit]
+  coordinates {(BP,0.5875)+-(0,0.00034)};
+
+\end{groupplot}
 \end{tikzpicture}
 \end{center}
-\end{figure}
+\end{figure*}
 
 \subsection{Attack Resistance Analysis (Figure 5)}
 
@@ -1191,6 +1226,10 @@ Table~\ref{tab:attacks}.}
   xlabel={Attack Type},
   ylabel={Adversarial Success Rate (\%)},
   ymin=0, ymax=12,
+  nodes near coords,
+  every node near coord/.append style={font=\tiny, rotate=90,
+    anchor=west, yshift=-2pt, xshift=5pt,
+    /pgf/number format/.cd, fixed, precision=2, fixed zerofill},
   symbolic x coords={Replay Attack, Correlation Attack,
                      Linkability Attack, Sybil Attack},
   xtick=data,
